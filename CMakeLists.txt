@@ -152,7 +152,7 @@ ExternalProject_Add (
 set (GLIBC_ENV_ARG env PATH=${CROSS_TOOL_PREFIX}/bin:/bin:/usr/bin BUILD_CC=gcc CC=${CROSS_TARGET}-gcc\ ${BUILD64} CXX=${CROSS_TARGET}-gcc\ ${BUILD64} AR=${CROSS_TARGET}-ar RANLIB=${CROSS_TARGET}-ranlib)
 ExternalProject_Add (
     glibc
-    SOURCE_DIR ${CROSS_TOOL_SRC_DIR}/glibc_crossbuild
+    SOURCE_DIR ${CROSS_TOOL_SRC_DIR}/glibc
     DEPENDS binutils_crossbuild gcc_crossbuild linux_src_downloader
 
     GIT_REPOSITORY "git://github.com/loongson/glibc.git" GIT_SHALLOW
@@ -161,7 +161,7 @@ ExternalProject_Add (
     UPDATE_DISCONNECTED true  # need this to avoid constant rebuild
 
     BUILD_IN_SOURCE OFF
-    CONFIGURE_COMMAND ${GLIBC_ENV_ARG} ${CROSS_TOOL_SRC_DIR}/glibc_crossbuild/configure --prefix=/usr --host=${CROSS_TARGET} --build=${CROSS_HOST} --libdir=/usr/lib64 --libexecdir=/usr/lib64/glibc --enable-add-ons --with-tls --with-binutils=${CROSS_TOOL_PREFIX}/bin --with-headers=${TARGET_SYSROOT}/usr/include --enable-obsolete-rpc --disable-werror
+    CONFIGURE_COMMAND ${GLIBC_ENV_ARG} ${CROSS_TOOL_SRC_DIR}/glibc/configure --prefix=/usr --host=${CROSS_TARGET} --build=${CROSS_HOST} --libdir=/usr/lib64 --libexecdir=/usr/lib64/glibc --enable-add-ons --with-tls --with-binutils=${CROSS_TOOL_PREFIX}/bin --with-headers=${TARGET_SYSROOT}/usr/include --enable-obsolete-rpc --disable-werror
 
     BUILD_COMMAND ${GLIBC_ENV_ARG} make ${MAKE_MULTIJOB}
     INSTALL_COMMAND make DESTDIR=${TARGET_SYSROOT} install

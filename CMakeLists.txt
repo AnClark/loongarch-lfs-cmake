@@ -19,6 +19,8 @@ set (CROSS_TOOL_SRC_DIR "${PROJECT_SOURCE_DIR}/deps-crossbuild")
 set (CROSS_TOOL_PREFIX "${WORK_DIR}/cross-tools")
 set (DOWNLOAD_DIR "${PROJECT_SOURCE_DIR}/downloads")
 
+set_property (GLOBAL PROPERTY EP_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/ExternalProject")
+
 set (CROSS_HOST x86_64-cross-linux-musl)
 set (CROSS_TARGET loongarch64-unknown-linux-gnu)
 set (MABI lp64)
@@ -72,7 +74,7 @@ ExternalProject_Add (
     GIT_PROGRESS ON
     UPDATE_DISCONNECTED true  # need this to avoid constant rebuild
 
-    BUILD_IN_SOURCE ON      # Binutils will call for dependencies in source tree
+    BUILD_IN_SOURCE OFF      # Binutils will call for dependencies in source tree when GDB is enabled. Set to OFF if needing it.
     CONFIGURE_COMMAND CC=gcc AR=ar AS=as ${CROSS_TOOL_SRC_DIR}/binutils_crossbuild/configure --prefix=${CROSS_TOOL_PREFIX} --build=${CROSS_HOST} --host=${CROSS_HOST} --target=${CROSS_TARGET} --with-sysroot=${TARGET_SYSROOT} --disable-nls --disable-static --disable-werror --enable-64-bit-bfd
     BUILD_COMMAND make ${MAKE_MULTIJOB} configure-host && make ${MAKE_MULTIJOB}
     INSTALL_COMMAND make ${MAKE_MULTIJOB} install
@@ -85,7 +87,7 @@ ExternalProject_Add_Step (
     DEPENDEES download
     COMMAND rm -rf gdb libdecnumber readline sim
     WORKING_DIRECTORY ${CROSS_TOOL_SRC_DIR}/binutils_crossbuild
-    ALWAYS OFF
+    ALWAYS ON
 )
 
 ExternalProject_Add (
